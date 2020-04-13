@@ -57,35 +57,46 @@ echo getCurrentID();
 echo "<br>";
 echo count(getBooks($json_data));
 echo "<br>";
-/*
-function getBibleTopic($topic){
-  $verses = array();  
-  if ($topic=="all"){
-    $verses = $json_data["bible"];
-  }
-  else{
-    $bible = json_data["bible"];
-    foreach($bible as $item){
+
+function getBibleTopic($topic, $json_data){
+  $verses = array();
+  //echo "topic: " . $topic;  
+  $bible = $json_data["bible"];
+  //echo $bible;
+  
+  foreach($bible as $item){
         $verse = $item["word"];
-        if (strpos($, $topic)==true){
+        if (strpos(strtolower($verse), strtolower($topic))==true){
            array_push($verses, $item);
-           echo $verse;
+    //       echo $verse;
         }
-    }
   }		   
   return $verses;
  }
-*/
-/* 
-def getBookVerses(bookTitle):
-    verses = []
-    bible = json_data["bible"]
-    for item in bible:
-        verse = item["book"]
-        if bookTitle.lower() in verse.lower():
-           verses.append(item)
-           print(verse)		   
-    return verses
+
+//$topic = "Jesus";
+//echo count(getBibleTopic($topic, $json_data));
+
+ 
+function getBookVerses($bookTitle, $json_data){
+    $verses = array();
+    $bible = $json_data["bible"];
+    $bookTitle = strtolower($bookTitle);
+    foreach ($bible as $item){
+        $book = strtolower($item["book"]);
+        
+        if ($book==$bookTitle){
+           array_push($verses, $item);
+           echo $verse;
+        }
+    }   
+    echo "found: " . count($verses);
+}
+
+$booktitle = "Matthew";
+getBookVerses($booktitle, $json_data);
+
+/*
 bible = []
 choice = input("topic or book: ")
 
