@@ -36,7 +36,7 @@ function getCurrentID(){
 
 function getBooks($json_data){
   $verses = $json_data["bible"];
-  $books = array("Genesis");
+  $books = array();
   
   foreach($verses as $verse){
     $book = $verse["book"];
@@ -48,16 +48,18 @@ function getBooks($json_data){
     }*/
   }
   $books = array_unique($books);
-  //echo count($books);
+  echo count($books);
+  echo "<br>";
   return $books;
 }
 echo getCurrentID();
 //echo $json_data;
+echo "<br>";
 echo count(getBooks($json_data));
-
-
+echo "<br>";
+/*
 function getBibleTopic($topic){
-  $verses = [];  
+  $verses = array();  
   if ($topic=="all"){
     $verses = $json_data["bible"];
   }
@@ -73,6 +75,7 @@ function getBibleTopic($topic){
   }		   
   return $verses;
  }
+*/
 /* 
 def getBookVerses(bookTitle):
     verses = []
