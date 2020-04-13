@@ -22,7 +22,8 @@ echo '<a href="' . $escaped_url . '">' . $escaped_url . '</a>';
 <video id="myVideo" width="320" height="176">
   <source id="source" src= type="video/mp4">
   <source src="mov_bbb.ogg" type="video/ogg">
-  <track id="track" label="English" kind="subtitles" srclang="en" default>
+  <track id="track" label="English" kind="subtitles" srclang="en">
+  <track id="track2" label="Bible" kind="subtitles" srclang="en" src="bible-subs.vtt" default>
   Your browser does not support HTML5 video.
 </video>
 <button onclick="play()">play</button>

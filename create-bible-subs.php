@@ -1,14 +1,15 @@
 <?php
+
+$length = 240;
+$id = "1";
+$start = "00:00:00.000"; 
+$to = "-->";
+$end = " 00:01:00,000";
+
+$words = "Is that you on the beach?";
+$toString = $id . "\n" . $start . "\n" . $to . "\n" . $end . "\n" . $words . "\n\n";
+
 /*
-length = 240
-id = "1"
-start = "00:00:00,000" 
-to = "-->"
-end = " 00:01:00,000"
-words = "Is that you on the beach?"
-toString = id + "\n" + start + "\n" + to + "\n" + end + "\n" + words + "\n\n"
-
-
 file = open("bible.json", "r")
 json_data = json.load(file)
 */
@@ -90,53 +91,116 @@ function getBookVerses($bookTitle, $json_data){
            echo $verse;
         }
     }   
-    echo "found: " . count($verses);
+    return $verses;
 }
 
 $booktitle = "Matthew";
-getBookVerses($booktitle, $json_data);
+//getBookVerses($booktitle, $json_data);
+
+
+$bible = array();
+$choice = "book";
+
+if ($choice==="book"){
+ $topic = "Matthew";
+ $bible = getBookVerses($topic, $json_data);
+}
+else{  
+ $topic = "love";
+ $bible = getBibleTopic($topic, $json_data);  
+}
+
+$totalVerses = count($bible);
+
+echo "total verses: " . $totalVerses;
+
+  
+function getVerse($id, $bible){
+
+	$verse = $bible[$id-1];
+	return $verse;
+}
+
+//echo getVerse(3, $bible);
+
+   
+function convertToHoursMins($time, $format = '%02d:%02d') {
+    echo "<br>";
+    if ($time < 1) {
+        return "00:00:00.000";
+    }
+    $hours = floor($time / 60);
+    $minutes = ($time % 60);
+    return sprintf($format, $hours, $minutes);
+}
+
+//echo convertToHoursMins(121, '%02d:%02d:00.000');
 
 /*
-bible = []
-choice = input("topic or book: ")
+function getMinute($minutes){
+    echo "<br>";
+    echo "minute: " . date('H:m:i', mktime(0,1));
+    //echo "hello";
 
-if choice=="book":
- books = getBooks()
- topic = input("book name: " )
- for book in books:
-  if topic.lower() == book.lower():
-   bookName = book
-   bible = getBookVerses(bookName)
-else:  
- topic = input("topic: " )
- bible = getBibleTopic(topic)  
-
-totalVerses = len(bible)
-  
-def getVerse(id):
-
-	verse = bible[id-1]
-	return verse
-   
-def getMinute(minutes):
-   result = '{:02d}:{:02d}:00,000'.format(*divmod(minutes, 60 ))
-   return result
+   //$result = '{:02d}:{:02d}:00,000'.format(*divmod(minutes, 60 ));
+   //return $result;
  
-currentID =  getCurrentID() 
-subtitles = ""
-for i in range(1, length, 1):
-	id = str(i)
-	start = getMinute(i-1)
-	end = getMinute(i)
-	verse = getVerse(currentID)	
-	words = verse["word"] + " " + verse["book"] + " " + str(verse["chapter"]) + ":" + str(verse["verse"])
-	toString = id + "\n" + start + " " + to + " " + end + "\n" + words + "\n\n"
-	print(toString)
-	currentID = currentID + 1
-	if currentID>totalVerses:
-	  currentID = 1
-	subtitles = subtitles + toString
+}
 
+getMinute(1);
+*/
+
+$myfile = fopen("bible-subs.vtt", "w") or die("Unable to open file!");
+
+
+$currentID =  getCurrentID(); 
+$subtitles = "WEBVTT";
+fwrite($myfile, $subtitles);
+fwrite($myfile, "\r\n\r\n");
+echo "<br>";
+echo $subtitles;
+echo "<br><br>";
+$substrings = "";
+//echo "<br>current id: " . $currentID;
+
+for ($i=1; $i<=$length; $i++){
+	$id = $i;
+	$currentID = $currentID + 1;
+	if ($currentID>$totalVerses){
+	  $currentID = 1;
+        }
+        echo "<br>" . $id . "<br>";
+        fwrite($myfile, $id);
+        fwrite($myfile, "\r\n");
+	$start = convertToHoursMins($i-1, '%02d:%02d:00.000');
+	$end = convertToHoursMins($i, '%02d:%02d:00.000');
+        $time = $start .  " " . $to . " " . $end;
+        fwrite($myfile, $time);
+        fwrite($myfile, "\r\n");        
+        echo $time . "<br>";
+	$verse = getVerse($currentID, $bible);	
+	$words = $verse["word"] . " " . $verse["book"] . " " . $verse["chapter"] . ":" . $verse["verse"];
+ 	echo $words . "<br>";
+        fwrite($myfile, $words);
+        fwrite($myfile, "\r\n\r\n"); 
+        //$toString = $i . "\r\n" . $time . "\r\n" . $words . "\r\n\r\n";
+        //$substrings .= $toString;
+       
+}
+
+fclose($myfile); 
+//$subtitles .= "\r\n\r\n" . $substrings;
+
+
+/*
+
+
+
+
+*/
+//echo $substrings;
+
+/*
 outfile = open("bible-subtitles.srt", "w")
 outfile.write(subtitles)
 outfile.close()
